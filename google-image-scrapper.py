@@ -9,15 +9,16 @@ from time import sleep
 import requests
 
 def download_img_by_url(url, path):
+    ''' Downloads the image and saves it in the given directory '''
     response = requests.get(url)
     if response.status_code == 200:
         image_content = response.content
 
         with open(path, "wb") as file:
             file.write(image_content)
-            print("Obrazek został pomyślnie pobrany")
+            print("The image has been successfully downloaded!")
     else:
-        print("Wystąpił błąd podczas pobierania obrazka.")
+        print("An error occurred while downloading!")
 
 def scroll_website():
     ''' Scrolls to the bottom of website '''
@@ -40,12 +41,13 @@ def scroll_website():
 
         last_height = new_height
 
-SEARCH_PHRASE = "Ana De Armas"
-DRIVER_PATH = r"C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/Machine learning/Country-leaders-face-recognition/msedgedriver.exe"
+SEARCH_PHRASE = "Ana De Armas" # Your search phrase
+DRIVER_PATH = r'''C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/
+Machine learning/Country-leaders-face-recognition/msedgedriver.exe''' # Path to your chromium driver
 
-edge_service = Service(DRIVER_PATH)
-edge_options = Options()
-browser = webdriver.Edge(service=edge_service, options=edge_options)
+service = Service(DRIVER_PATH)
+options = Options()
+browser = webdriver.Edge(service=service, options=options)
 wait = WebDriverWait(browser, 10)
 browser.maximize_window()
 browser.get("https://images.google.com/")
@@ -72,7 +74,7 @@ for thumbnail in thumbnails:
     try:
         image = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb")))
         img_url = image.get_attribute("src")
-        download_img_by_url(url=img_url, path=f'./Data/Test/{img_id}.PNG')
+        download_img_by_url(url=img_url, path=f'{img_id}.PNG')
     except TimeoutException:
         continue
 
