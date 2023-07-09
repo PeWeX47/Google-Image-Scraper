@@ -41,16 +41,16 @@ def scroll_website():
 
         last_height = new_height
 
-SEARCH_PHRASE = "Ana De Armas" # Your search phrase
+SEARCH_PHRASE = "Obama" # Your search phrase
 DRIVER_PATH = r'''C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/
 Machine learning/Country-leaders-face-recognition/msedgedriver.exe''' # Path to your chromium driver
 
 service = Service(DRIVER_PATH)
 options = Options()
 browser = webdriver.Edge(service=service, options=options)
-wait = WebDriverWait(browser, 10)
+wait = WebDriverWait(driver=browser, timeout=5) # timeout >= 10 for lower download speeds
 browser.maximize_window()
-browser.get("https://images.google.com/")
+browser.get("https://www.google.com/imghp?hl=EN")
 
 dismiss_btn = browser.find_element(By.ID, "W0wltc")
 dismiss_btn.click()
@@ -67,17 +67,14 @@ scroll_website()
 
 thumbnails = browser.find_elements(By.CLASS_NAME, "rg_i.Q4LuWd")
 
-img_id = 0
-for thumbnail in thumbnails:
+for img_id, thumbnail in enumerate(thumbnails):
     thumbnail.click()
 
     try:
         image = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb")))
         img_url = image.get_attribute("src")
-        download_img_by_url(url=img_url, path=f'{img_id}.PNG')
+        download_img_by_url(url=img_url, path=f'../Data/scrapped_photos/Obama/{img_id}.PNG')
     except TimeoutException:
         continue
-
-    img_id += 1
 
 browser.quit()
