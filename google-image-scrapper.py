@@ -8,8 +8,9 @@ from selenium.common.exceptions import TimeoutException
 from time import sleep
 import requests
 
+
 def download_img_by_url(url, path):
-    ''' Downloads the image and saves it in the given directory '''
+    """Downloads the image and saves it in the given directory"""
     response = requests.get(url)
     if response.status_code == 200:
         image_content = response.content
@@ -20,35 +21,43 @@ def download_img_by_url(url, path):
     else:
         print("An error occurred while downloading!")
 
+
 def scroll_website():
-    ''' Scrolls to the bottom of website '''
-    last_height = browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
- 
+    """Scrolls to the bottom of website"""
+    last_height = browser.execute_script(
+        "window.scrollTo(0, document.body.scrollHeight);"
+    )
+
     while True:
-        browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(3)
-        new_height = browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
- 
+        new_height = browser.execute_script(
+            "window.scrollTo(0, document.body.scrollHeight);"
+        )
+
         try:
             browser.find_element_by_css_selector(".YstHxe input").click()
             sleep(3)
- 
+
         except:
             pass
- 
+
         if new_height == last_height:
             break
 
         last_height = new_height
 
-SEARCH_PHRASE = "Obama" # Your search phrase
-DRIVER_PATH = r'''C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/
-Machine learning/Country-leaders-face-recognition/msedgedriver.exe''' # Path to your chromium driver
+
+SEARCH_PHRASE = "Fiat 126p"  # Your search phrase
+DRIVER_PATH = r"""C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/
+Machine learning/Country-leaders-face-recognition/msedgedriver.exe"""  # Path to your chromium driver
 
 service = Service(DRIVER_PATH)
 options = Options()
 browser = webdriver.Edge(service=service, options=options)
-wait = WebDriverWait(driver=browser, timeout=5) # timeout >= 10 for lower download speeds
+wait = WebDriverWait(
+    driver=browser, timeout=5
+)  # timeout >= 10 for lower download speeds
 browser.maximize_window()
 browser.get("https://www.google.com/imghp?hl=EN")
 
@@ -71,9 +80,13 @@ for img_id, thumbnail in enumerate(thumbnails):
     thumbnail.click()
 
     try:
-        image = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb")))
+        image = wait.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb"))
+        )
         img_url = image.get_attribute("src")
-        download_img_by_url(url=img_url, path=f'../Data/scrapped_photos/Obama/{img_id}.PNG')
+        download_img_by_url(
+            url=img_url, path=f"../Data/scrapped_photos/Obama/{img_id}.PNG"
+        )
     except TimeoutException:
         continue
 
