@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from time import sleep
 import requests
+import os
 
 
 def download_img_by_url(url, path):
@@ -48,7 +49,7 @@ def scroll_website():
         last_height = new_height
 
 
-SEARCH_PHRASE = "Fiat 126p"  # Your search phrase
+SEARCH_PHRASE = "dogs"  # Your search phrase
 DRIVER_PATH = r"""C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/
 Machine learning/Country-leaders-face-recognition/msedgedriver.exe"""  # Path to your chromium driver
 
@@ -75,6 +76,7 @@ sleep(2)
 scroll_website()
 
 thumbnails = browser.find_elements(By.CLASS_NAME, "rg_i.Q4LuWd")
+os.makedirs(f"images/{SEARCH_PHRASE}", exist_ok=True)
 
 for img_id, thumbnail in enumerate(thumbnails):
     thumbnail.click()
@@ -84,9 +86,7 @@ for img_id, thumbnail in enumerate(thumbnails):
             EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb"))
         )
         img_url = image.get_attribute("src")
-        download_img_by_url(
-            url=img_url, path=f"../Data/scrapped_photos/Obama/{img_id}.PNG"
-        )
+        download_img_by_url(url=img_url, path=f"images/{SEARCH_PHRASE}/{img_id}.PNG")
     except TimeoutException:
         continue
 
