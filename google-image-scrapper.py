@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from time import sleep
 import requests
+import keyboard
 import os
 
 
@@ -25,28 +26,18 @@ def download_img_by_url(url, path):
 
 def scroll_website():
     """Scrolls to the bottom of website"""
-    last_height = browser.execute_script(
-        "window.scrollTo(0, document.body.scrollHeight);"
-    )
-
     while True:
-        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        sleep(3)
-        new_height = browser.execute_script(
-            "window.scrollTo(0, document.body.scrollHeight);"
-        )
+        browser.execute_script("window.scrollBy(0, 300);")
+
+        if keyboard.is_pressed("s"):
+            break
 
         try:
-            browser.find_element_by_css_selector(".YstHxe input").click()
+            browser.find_element(By.CLASS_NAME, "LZ4I").click()
             sleep(3)
 
         except:
             pass
-
-        if new_height == last_height:
-            break
-
-        last_height = new_height
 
 
 SEARCH_PHRASE = "dogs"  # Your search phrase
