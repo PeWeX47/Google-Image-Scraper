@@ -13,7 +13,7 @@ import os
 
 def download_img_by_url(url, path):
     """Downloads the image and saves it in the given directory"""
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)  # Set timeout for image download
     if response.status_code == 200:
         image_content = response.content
 
@@ -25,7 +25,7 @@ def download_img_by_url(url, path):
 
 
 def scroll_website():
-    """Scrolls to the bottom of website"""
+    """Scrolls to the bottom of the website"""
     while True:
         browser.execute_script("window.scrollBy(0, 300);")
 
@@ -35,7 +35,6 @@ def scroll_website():
         try:
             browser.find_element(By.CLASS_NAME, "LZ4I").click()
             sleep(3)
-
         except:
             pass
 
@@ -48,7 +47,7 @@ service = Service(DRIVER_PATH)
 options = Options()
 browser = webdriver.Edge(service=service, options=options)
 wait = WebDriverWait(
-    driver=browser, timeout=5
+    driver=browser, timeout=2
 )  # timeout >= 10 for lower download speeds
 browser.maximize_window()
 browser.get("https://www.google.com/imghp?hl=EN")
@@ -67,7 +66,10 @@ sleep(2)
 scroll_website()
 
 thumbnails = browser.find_elements(By.CLASS_NAME, "rg_i.Q4LuWd")
-os.makedirs(f"images/{SEARCH_PHRASE}", exist_ok=True)
+os.makedirs(
+    f"C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/Machine learning/Face-Classification-Project/images/{SEARCH_PHRASE}",
+    exist_ok=True,
+)
 
 for img_id, thumbnail in enumerate(thumbnails):
     thumbnail.click()
@@ -77,7 +79,14 @@ for img_id, thumbnail in enumerate(thumbnails):
             EC.presence_of_element_located((By.CLASS_NAME, "r48jcc.pT0Scc.iPVvYb"))
         )
         img_url = image.get_attribute("src")
-        download_img_by_url(url=img_url, path=f"images/{SEARCH_PHRASE}/{img_id}.PNG")
+        try:
+            download_img_by_url(
+                url=img_url,
+                path=f"C:/Users/wilko/Desktop/Studia/Projekty swoje/Python/Machine learning/Face-Classification-Project/images/{SEARCH_PHRASE}/{img_id}.PNG",
+            )
+        except requests.Timeout:
+            print("Image download timed out. Skipping to the next image...")
+            continue
     except TimeoutException:
         continue
 
